@@ -30,7 +30,7 @@ class MakananController extends Controller implements SubjectInterface
 
     public function getMakananTersedia()
     {
-        return Makanan::where('status', 'tersedia')->get()->toArray();
+        return Makanan::where('status', 'available')->get()->toArray();
     }
 
     public function requestDaftarMakanan()
