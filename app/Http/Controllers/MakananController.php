@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Makanan;
 use App\Observers\SubjectInterface;
 use App\Observers\ObserverInterface;
+use App\Builders\MakananQueryBuilder;
 
 class MakananController extends Controller implements SubjectInterface
 {
@@ -37,5 +38,19 @@ class MakananController extends Controller implements SubjectInterface
     {
         $this->daftarMakanan = $this->getMakananTersedia();
         $this->notifyObservers();
+    }
+    public function requestMakananDenganFilter(array $filter)
+    {
+        $builder = new MakananQueryBuilder();
+
+        if (isset($filter['lokasi'])) {
+            $builder->setLokasi($filter['lokasi']);
+        }
+
+        if (isset($filter['kategori'])) {
+            $builder->setKategori($filter['kategori']);
+        }
+
+        return $builder->get();
     }
 }

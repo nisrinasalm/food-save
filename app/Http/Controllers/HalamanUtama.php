@@ -22,4 +22,20 @@ class HalamanUtama implements ObserverInterface
             echo "Tidak ada makanan yang tersedia saat ini.\n";
         }
     }
+
+    public function cariMakananDenganBuilder(array $filter)
+    {
+        $controller = new MakananController();
+        $daftar = $controller->requestMakananDenganFilter($filter);
+
+        if (count($daftar) > 0) {
+            echo "Hasil pencarian makanan:\n";
+            foreach ($daftar as $makanan) {
+                echo "- {$makanan['nama']} ({$makanan['kategori']}) di {$makanan['lokasi']}\n";
+            }
+        } else {
+            echo "Tidak ada makanan yang tersedia dengan filter tersebut.\n";
+        }
+    }
+
 }
