@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\States\User\UserState;
+use App\States\User\UnverifiedState;
+use App\States\User\VerifiedState;
+use App\States\User\RejectedState;
+
 
 class User extends Authenticatable
 {
@@ -21,6 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'peran',
+        'status',
     ];
 
     /**
@@ -45,4 +51,30 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-}
+
+    protected UserState $state;
+
+    public function setState(UserState $state): void
+    {
+        $this->state = $state;
+    }
+
+    public function getState(): UserState
+    {
+        return match ($this->status) {
+            'verified' => new VerifiedState(),
+            'rejected' => new RejectedState(),
+            default => new UnverifiedState(),
+        };
+    }
+
+    public function approve(): void
+    {
+        $this->getState()->approve($this);
+    }
+
+    public function reject(): void
+    {
+        $this->getState()->reject($this);
+    }
+    }
